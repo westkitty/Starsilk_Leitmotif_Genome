@@ -1,0 +1,44 @@
+name: Bootstrap repository snapshot
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap:
+    if: ${{ github.actor != 'github-actions[bot]' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Expand repository snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f bootstrap/repo.tar.gz
+          tar -xzf bootstrap/repo.tar.gz -C .
+          rm -rf bootstrap
+          rm -f .github/workflows/bootstrap.yml
+      - name: Validate expanded repository
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python -m unittest discover -s tests -v
+          PYTHONPATH=src python -m leitmotif_genome validate --genome data/genome/starsilk_genome.json --corpus data/corpus/corpus_manifest.json
+      - name: Publish repository
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "Publish Starsilk Leitmotif Genome v0.1.0"
+          git push origin HEAD:main
