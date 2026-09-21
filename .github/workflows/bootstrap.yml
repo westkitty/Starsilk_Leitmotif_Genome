@@ -3,6 +3,8 @@ name: Bootstrap repository snapshot
 on:
   push:
     branches: [main]
+  issues:
+    types: [opened]
 
 permissions:
   contents: write
