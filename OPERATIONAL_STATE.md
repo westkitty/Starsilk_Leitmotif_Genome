@@ -6,12 +6,12 @@
   "project_name": "Starsilk Leitmotif Genome",
   "project_root": "/mnt/data/Starsilk_Leitmotif_Genome",
   "artifact_path": "",
-  "state_revision": 2,
-  "last_updated": "2026-09-21T20:12:00Z",
+  "state_revision": 3,
+  "last_updated": "2026-09-21T21:19:00Z",
   "current_baseline": {
-    "identity": "v0.1.0 initialization candidate",
-    "state": "partially-verified",
-    "last_verified": "2026-09-21T20:12:00Z"
+    "identity": "main@1e50b1723536d026787c1f53cb5776cfad06d59e",
+    "state": "verified",
+    "last_verified": "2026-09-21T20:13:48Z"
   },
   "scope_boundaries": [
     "Starsilk musical-analysis toolkit and its documentation only",
@@ -25,7 +25,7 @@
 Starsilk Leitmotif Genome is a source-grounded musical-heredity toolkit for extracting, representing, testing and reusing leitmotif DNA without reducing identities to quoted melodies.
 
 ## 2. Current Baseline
-The v0.1.0 initialization candidate is locally implemented and passes its standard-library test suite. The authoritative Starsilk corpus has not yet been ingested.
+v0.1.0 is published on GitHub at `main@1e50b1723536d026787c1f53cb5776cfad06d59e`. The `Genome validation` workflow completed successfully on that commit. The authoritative Starsilk corpus has not yet been ingested.
 
 ## 3. Artifact Contract
 Deliver a usable repository containing a machine-readable genome model, source-family lineage model, evidence discipline, holdout/negative-control testing, conformance engine, validator, documentation and automated tests.
@@ -158,11 +158,35 @@ Deliver a usable repository containing a machine-readable genome model, source-f
 - **Recheck trigger:** Holdout algorithm or family model changes
 <!-- /operational-state:entry -->
 
+<!-- operational-state:entry
+{
+  "id": "VER-004",
+  "title": "Remote publication and CI are verified",
+  "state": "verified",
+  "capability": "The complete v0.1.0 repository is published on main and GitHub Actions validates the pushed tree successfully.",
+  "scope": "Repository publication and CI",
+  "verification_method": "GitHub commit/tree inspection plus workflow run 35649733013",
+  "evidence": "Commit 1e50b1723536d026787c1f53cb5776cfad06d59e exists on main; Genome validation run 35649733013 completed with conclusion success.",
+  "artifact_revision": "main@1e50b1723536d026787c1f53cb5776cfad06d59e",
+  "last_verified": "2026-09-21T20:13:48Z",
+  "dependencies": ["GitHub Actions"],
+  "freshness": "current",
+  "recheck_trigger": "Any push to main or CI workflow change"
+}
+-->
+### VER-004 — Remote publication and CI are verified
+- **State:** `verified`
+- **Capability:** The complete v0.1.0 repository is published on `main` and GitHub Actions validates the pushed tree successfully.
+- **Verification method:** GitHub commit/tree inspection plus workflow run `35649733013`
+- **Evidence:** Commit `1e50b1723536d026787c1f53cb5776cfad06d59e`; workflow conclusion `success`.
+- **Recheck trigger:** Any push to `main` or CI workflow change
+<!-- /operational-state:entry -->
+
 ## 6. Known Not Working
 None established.
 
 ## 7. Implemented but Unverified
-- GitHub Actions workflow is implemented but cannot be called verified until the pushed workflow runs successfully on GitHub.
+None currently.
 
 ## 8. Unknown or Evidence-Stale State
 - Direct-audio corpus analysis remains unavailable until source material is ingested.
@@ -186,10 +210,12 @@ None established.
 | VER-001 | Evidence promotion gates | verified | 10/10 local tests | unittest | Validator/schema change |
 | VER-002 | Conformance distinctions | verified | tests + CLI | unittest/CLI | Conformance change |
 | VER-003 | Family-level holdout | verified | tests + CLI | unittest/CLI | Holdout/family change |
+| VER-004 | Remote publication + CI | verified | GitHub commit + workflow run | remote inspection | Any push/CI change |
 
 ## 12. Current Change Scope and Impact Radius
-Complete v0.1 initialization, stage and commit locally, then publish to the empty GitHub repository. No pre-existing target-repository files require preservation.
+v0.1 initialization and publication are complete. The next bounded work is authoritative corpus ingestion; no musical gene promotion is permitted before source-family and evidence classification.
 
 ## 13. Compact Revision Log
 - Revision 1 — Bootstrapped greenfield operational state before implementation.
 - Revision 2 — Implemented and locally verified the v0.1 engine; 10/10 tests pass. GitHub CI remains implemented-unverified until remote execution.
+- Revision 3 — Verified remote publication at `1e50b172...` and successful GitHub Actions run `35649733013`; CI is promoted to verified.
