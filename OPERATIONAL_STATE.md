@@ -6,12 +6,12 @@
   "project_name": "Starsilk Leitmotif Genome",
   "project_root": "/mnt/data/Starsilk_Leitmotif_Genome",
   "artifact_path": "",
-  "state_revision": 3,
-  "last_updated": "2026-09-21T21:19:00Z",
+  "state_revision": 4,
+  "last_updated": "2026-09-21T21:43:27Z",
   "current_baseline": {
-    "identity": "main@1e50b1723536d026787c1f53cb5776cfad06d59e",
+    "identity": "main@ca9f678d117b5d9431a8ba610ee53ca73682b4af",
     "state": "verified",
-    "last_verified": "2026-09-21T20:13:48Z"
+    "last_verified": "2026-09-21T21:43:27Z"
   },
   "scope_boundaries": [
     "Starsilk musical-analysis toolkit and its documentation only",
@@ -182,6 +182,30 @@ Deliver a usable repository containing a machine-readable genome model, source-f
 - **Recheck trigger:** Any push to `main` or CI workflow change
 <!-- /operational-state:entry -->
 
+<!-- operational-state:entry
+{
+  "id": "VER-005",
+  "title": "Evidence Observatory is deployed on GitHub Pages",
+  "state": "verified",
+  "capability": "The interactive Evidence Observatory is publicly deployed and serves the current genome and corpus JSON alongside clearly separated synthetic proof fixtures.",
+  "scope": "GitHub Pages evidence interface",
+  "verification_method": "GitHub Pages workflow run 35658508867 attempt 2 plus direct HTTPS checks",
+  "evidence": "Pages run 35658508867 completed with conclusion success; HTML, genome JSON, and corpus JSON each returned HTTP 200 from https://westkitty.github.io/Starsilk_Leitmotif_Genome/.",
+  "artifact_revision": "main@ca9f678d117b5d9431a8ba610ee53ca73682b4af",
+  "last_verified": "2026-09-21T21:43:27Z",
+  "dependencies": ["GitHub Pages", "GitHub Actions"],
+  "freshness": "current",
+  "recheck_trigger": "Any change to site/, data/, tests/fixtures/, Pages settings, or the Pages workflow"
+}
+-->
+### VER-005 — Evidence Observatory is deployed on GitHub Pages
+- **State:** `verified`
+- **Capability:** The interactive Evidence Observatory is publicly deployed and serves the current genome and corpus JSON alongside clearly separated synthetic proof fixtures.
+- **Verification method:** Pages workflow run `35658508867` attempt 2 plus direct HTTPS checks
+- **Evidence:** HTML, genome JSON, and corpus JSON each returned HTTP `200` from `https://westkitty.github.io/Starsilk_Leitmotif_Genome/`.
+- **Recheck trigger:** Any change to `site/`, `data/`, `tests/fixtures/`, Pages settings, or the Pages workflow
+<!-- /operational-state:entry -->
+
 ## 6. Known Not Working
 None established.
 
@@ -210,12 +234,12 @@ None currently.
 | VER-001 | Evidence promotion gates | verified | 10/10 local tests | unittest | Validator/schema change |
 | VER-002 | Conformance distinctions | verified | tests + CLI | unittest/CLI | Conformance change |
 | VER-003 | Family-level holdout | verified | tests + CLI | unittest/CLI | Holdout/family change |
-| VER-004 | Remote publication + CI | verified | GitHub commit + workflow run | remote inspection | Any push/CI change |
+| VER-004 | Remote publication + CI | verified | GitHub commit + workflow run | remote inspection | Any push/CI change |\n| VER-005 | Evidence Observatory on Pages | verified | Pages run 35658508867 + HTTP 200 checks | deployed-site inspection | Site/data/Pages change |
 
 ## 12. Current Change Scope and Impact Radius
-v0.1 initialization and publication are complete. The next bounded work is authoritative corpus ingestion; no musical gene promotion is permitted before source-family and evidence classification.
+v0.1 initialization, evidence interface, and GitHub Pages publication are complete. The next bounded work is authoritative corpus ingestion; no musical gene promotion is permitted before source-family and evidence classification.
 
 ## 13. Compact Revision Log
 - Revision 1 — Bootstrapped greenfield operational state before implementation.
 - Revision 2 — Implemented and locally verified the v0.1 engine; 10/10 tests pass. GitHub CI remains implemented-unverified until remote execution.
-- Revision 3 — Verified remote publication at `1e50b172...` and successful GitHub Actions run `35649733013`; CI is promoted to verified.
+- Revision 3 — Verified remote publication at `1e50b172...` and successful GitHub Actions run `35649733013`; CI is promoted to verified.\n- Revision 4 — Added the interactive Evidence Observatory at `ca9f678d...`, enabled GitHub Pages with workflow publishing, and verified Pages run `35658508867` plus HTTP 200 responses for the HTML, genome JSON, and corpus JSON.
