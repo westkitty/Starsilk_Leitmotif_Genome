@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "registry_id": "noncanonical-test-fixture",
+  "identities": [
+    {"identity_id": "DEMO", "name": "Synthetic test identity", "gene_ids": ["DEMO-I01", "DEMO-R01"]}
+  ],
+  "genes": [
+    {
+      "gene_id": "DEMO-I01",
+      "identity_id": "DEMO",
+      "status": "strongly-supported",
+      "carriers": ["interval"],
+      "genotype": {"relative_intervals": [0, 3, 2, -1]},
+      "invariants": ["contour-rise-rise-contract", "terminal-contraction"],
+      "permitted_mutations": ["transposition", "octave-displacement", "rhythmic-augmentation"],
+      "forbidden_mutations": ["contour-reversal"],
+      "required_for_recognition": true,
+      "count_for_conformance": true,
+      "weight": 2.0,
+      "evidence": [
+        {"source_family_id": "DEMO-FAMILY-A", "source_id": "DEMO-A1", "channel": "structural"},
+        {"source_family_id": "DEMO-FAMILY-B", "source_id": "DEMO-B1", "channel": "audio"}
+      ]
+    },
+    {
+      "gene_id": "DEMO-R01",
+      "identity_id": "DEMO",
+      "status": "tentative",
+      "carriers": ["rhythm"],
+      "genotype": {"relative_durations": [3, 3, 2]},
+      "invariants": ["three-three-two-grouping"],
+      "permitted_mutations": ["augmentation", "diminution"],
+      "forbidden_mutations": [],
+      "required_for_recognition": false,
+      "count_for_conformance": true,
+      "weight": 1.0,
+      "evidence": [
+        {"source_family_id": "DEMO-FAMILY-A", "source_id": "DEMO-A1", "channel": "structural"}
+      ]
+    }
+  ]
+}

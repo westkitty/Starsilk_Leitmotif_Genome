@@ -1,0 +1,12 @@
+{
+  "candidate_id": "DEMO-DRIFT",
+  "surface_traits": [],
+  "expressed_genes": [
+    {
+      "gene_id": "DEMO-I01",
+      "preserved_invariants": ["contour-rise-rise-contract", "terminal-contraction"],
+      "mutations": ["contour-reversal"],
+      "carriers": ["interval"]
+    }
+  ]
+}

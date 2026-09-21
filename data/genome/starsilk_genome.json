@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "registry_id": "starsilk-main",
+  "registry_status": "analysis-pending",
+  "principle": "relationships over notes; behavior over melodies; inheritance over repetition; transformation over quotation",
+  "identities": [
+    {"identity_id": "TIGER", "name": "Tiger / Shard-God", "analysis_status": "pending", "gene_ids": []},
+    {"identity_id": "CODEC", "name": "Codec", "analysis_status": "pending", "gene_ids": []},
+    {"identity_id": "DRAKKEN", "name": "Drakken", "analysis_status": "pending", "gene_ids": []},
+    {"identity_id": "STARSILK", "name": "Starsilk", "analysis_status": "pending", "gene_ids": []},
+    {"identity_id": "SIEGE_WALL", "name": "Siege Wall", "analysis_status": "pending", "gene_ids": []},
+    {"identity_id": "BLOOD_ECLIPSE_RECURRENCE", "name": "Blood Eclipse War recurrence", "analysis_status": "pending", "gene_ids": []},
+    {"identity_id": "MOTHER", "name": "Mother", "analysis_status": "pending", "gene_ids": []}
+  ],
+  "genes": [],
+  "transformation_operators": [
+    {"operator_id": "ALLIANCE", "status": "method-defined-evidence-pending"},
+    {"operator_id": "CORRUPTION", "status": "method-defined-evidence-pending"},
+    {"operator_id": "MEMORY", "status": "method-defined-evidence-pending"},
+    {"operator_id": "VIOLENCE", "status": "method-defined-evidence-pending"},
+    {"operator_id": "ABSENCE", "status": "method-defined-evidence-pending"},
+    {"operator_id": "HISTORICAL_RECURRENCE", "status": "method-defined-evidence-pending"}
+  ],
+  "notes": [
+    "Identity names and transformation questions come from the founding specification.",
+    "No musical gene is asserted until corpus evidence is ingested and validated.",
+    "The Siege Wall absence/deletion model remains a hypothesis until source evidence supports it."
+  ]
+}

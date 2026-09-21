@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "corpus_id": "noncanonical-test-corpus",
+  "source_families": [
+    {"family_id": "DEMO-FAMILY-A", "title": "Synthetic family A", "member_source_ids": ["DEMO-A1", "DEMO-A2"]},
+    {"family_id": "DEMO-FAMILY-B", "title": "Synthetic family B", "member_source_ids": ["DEMO-B1"]},
+    {"family_id": "DEMO-FAMILY-C", "title": "Synthetic negative control", "member_source_ids": ["DEMO-C1"]}
+  ],
+  "sources": [
+    {"source_id": "DEMO-A1", "source_family_id": "DEMO-FAMILY-A", "authority": "tentative", "audio_inspected": true},
+    {"source_id": "DEMO-A2", "source_family_id": "DEMO-FAMILY-A", "authority": "tentative", "audio_inspected": true},
+    {"source_id": "DEMO-B1", "source_family_id": "DEMO-FAMILY-B", "authority": "tentative", "audio_inspected": true},
+    {"source_id": "DEMO-C1", "source_family_id": "DEMO-FAMILY-C", "authority": "unknown", "audio_inspected": true}
+  ]
+}

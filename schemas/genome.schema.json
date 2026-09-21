@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starsilk.local/schemas/genome.schema.json",
+  "title": "Starsilk Leitmotif Genome Registry",
+  "type": "object",
+  "required": ["schema_version", "registry_id", "identities", "genes"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "registry_id": {"type": "string", "minLength": 1},
+    "registry_status": {"type": "string"},
+    "identities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["identity_id", "name", "gene_ids"],
+        "properties": {
+          "identity_id": {"type": "string", "pattern": "^[A-Z0-9_]+$"},
+          "name": {"type": "string"},
+          "analysis_status": {"type": "string"},
+          "gene_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+        }
+      }
+    },
+    "genes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["gene_id", "identity_id", "status", "carriers", "evidence"],
+        "properties": {
+          "gene_id": {"type": "string", "minLength": 1},
+          "identity_id": {"type": "string"},
+          "status": {"enum": ["canonical", "strongly-supported", "tentative", "unknown"]},
+          "carriers": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {"enum": ["interval", "rhythm", "harmony", "melody", "timbre", "vocal", "structure", "absence", "production"]}
+          },
+          "genotype": {"type": "object"},
+          "invariants": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "permitted_mutations": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "forbidden_mutations": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "required_for_recognition": {"type": "boolean"},
+          "count_for_conformance": {"type": "boolean"},
+          "weight": {"type": "number", "exclusiveMinimum": 0},
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["channel"],
+              "properties": {
+                "source_family_id": {"type": "string"},
+                "source_id": {"type": "string"},
+                "channel": {"enum": ["audio", "structural", "documentary", "canonical"]},
+                "note": {"type": "string"}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

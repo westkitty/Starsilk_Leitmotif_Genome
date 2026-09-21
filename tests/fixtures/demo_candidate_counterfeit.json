@@ -1,0 +1,5 @@
+{
+  "candidate_id": "DEMO-COUNTERFEIT",
+  "surface_traits": ["same-synth-family", "same-mix-density", "same-genre-tags"],
+  "expressed_genes": []
+}

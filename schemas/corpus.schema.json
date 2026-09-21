@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starsilk.local/schemas/corpus.schema.json",
+  "title": "Starsilk Musical Corpus Manifest",
+  "type": "object",
+  "required": ["schema_version", "corpus_id", "source_families", "sources"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "corpus_id": {"type": "string", "minLength": 1},
+    "source_families": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["family_id", "member_source_ids"],
+        "properties": {
+          "family_id": {"type": "string", "minLength": 1},
+          "title": {"type": "string"},
+          "ancestor_note": {"type": "string"},
+          "member_source_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source_id", "source_family_id", "authority"],
+        "properties": {
+          "source_id": {"type": "string", "minLength": 1},
+          "source_family_id": {"type": "string", "minLength": 1},
+          "title": {"type": "string"},
+          "version": {"type": "string"},
+          "source_location": {"type": "string"},
+          "authority": {"enum": ["canonical", "strongly-supported", "tentative", "unknown"]},
+          "audio_inspected": {"type": "boolean"},
+          "lyrics_available": {"type": "boolean"},
+          "production_notes_available": {"type": "boolean"},
+          "symbolic_material_available": {"type": "boolean"},
+          "content_hash": {"type": "string"}
+        }
+      }
+    }
+  }
+}

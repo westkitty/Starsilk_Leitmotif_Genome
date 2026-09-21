@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "corpus_id": "starsilk-musical-corpus",
+  "status": "not-yet-ingested",
+  "source_families": [],
+  "sources": [],
+  "notes": [
+    "Group alternate generations, remixes, revisions and reprises under a shared source_family_id when they descend from one compositional ancestor.",
+    "Prompt intent, documentary notes and audible realization are separate evidence channels.",
+    "Do not store secrets, credentials or inaccessible private URLs in this manifest."
+  ]
+}

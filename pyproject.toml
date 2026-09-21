@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "starsilk-leitmotif-genome"
+version = "0.1.0"
+description = "Evidence-gated musical heredity and leitmotif conformance toolkit for Starsilk"
+requires-python = ">=3.11"
+authors = [{name = "Stinky Weasel Productions"}]
+
+[project.scripts]
+starsilk-genome = "leitmotif_genome.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

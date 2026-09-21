@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "status": "empty-until-corpus-analysis",
+  "positive_descendants": [],
+  "boundary_cases": [],
+  "counterfeits": [],
+  "negative_controls": [],
+  "holdout_results": []
+}
