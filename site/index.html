@@ -1,0 +1,1000 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Interactive evidence observatory for the Starsilk Leitmotif Genome.">
+  <title>Starsilk Leitmotif Genome — Evidence Observatory</title>
+  <style>
+    :root {
+      --bg: #05080d;
+      --bg-2: #080e16;
+      --panel: #0d1621;
+      --panel-2: #111e2c;
+      --panel-3: #0b121b;
+      --text: #f1f6fb;
+      --muted: #8da0b3;
+      --muted-2: #63778c;
+      --line: rgba(154, 194, 224, 0.18);
+      --line-strong: rgba(154, 194, 224, 0.34);
+      --azure: #61cbff;
+      --azure-soft: rgba(97, 203, 255, 0.13);
+      --cyan: #86f5e8;
+      --amber: #f5c76f;
+      --amber-soft: rgba(245, 199, 111, 0.13);
+      --red: #ff7a83;
+      --red-soft: rgba(255, 122, 131, 0.12);
+      --green: #8ee8b0;
+      --green-soft: rgba(142, 232, 176, 0.12);
+      --violet: #b9a4ff;
+      --radius: 18px;
+      --radius-sm: 12px;
+      --shadow: 0 24px 80px rgba(0,0,0,.36);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 14% 0%, rgba(39, 129, 181, .16), transparent 28rem),
+        radial-gradient(circle at 90% 26%, rgba(49, 99, 142, .09), transparent 32rem),
+        linear-gradient(180deg, var(--bg), #05070b 62%, #030509);
+      font-family: var(--sans);
+      line-height: 1.5;
+    }
+
+    a { color: var(--azure); }
+    button, input, select { font: inherit; }
+    button, select, input { color: inherit; }
+    button { cursor: pointer; }
+    ::selection { background: rgba(97,203,255,.28); color: #fff; }
+
+    .skip-link {
+      position: absolute;
+      left: 12px;
+      top: -80px;
+      z-index: 50;
+      background: var(--text);
+      color: var(--bg);
+      padding: 10px 14px;
+      border-radius: 10px;
+    }
+    .skip-link:focus { top: 12px; }
+
+    .shell { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+    .masthead { padding: 54px 0 24px; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--azure);
+      font: 700 .72rem/1 var(--mono);
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 42px;
+      height: 7px;
+      background: repeating-linear-gradient(90deg, var(--azure), var(--azure) 2px, transparent 2px, transparent 5px);
+      opacity: .85;
+    }
+    h1 {
+      margin: 18px 0 14px;
+      max-width: 920px;
+      font-size: clamp(2.45rem, 7vw, 5.9rem);
+      line-height: .93;
+      letter-spacing: -.055em;
+      font-weight: 800;
+    }
+    .dek {
+      margin: 0;
+      max-width: 800px;
+      color: #bfd0df;
+      font-size: clamp(1rem, 2vw, 1.2rem);
+    }
+    .principle {
+      margin: 25px 0 0;
+      padding: 15px 17px;
+      border-left: 2px solid var(--azure);
+      color: #c9d8e5;
+      background: linear-gradient(90deg, var(--azure-soft), transparent 78%);
+      font-family: var(--mono);
+      font-size: .84rem;
+    }
+
+    .status-rail {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1px;
+      margin: 26px 0 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--line);
+    }
+    .metric {
+      min-width: 0;
+      padding: 17px 18px;
+      background: rgba(10, 18, 27, .95);
+    }
+    .metric-label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--muted);
+      font: 650 .67rem/1.25 var(--mono);
+      letter-spacing: .11em;
+      text-transform: uppercase;
+    }
+    .metric-value {
+      display: block;
+      font-size: clamp(1.35rem, 3vw, 2.05rem);
+      line-height: 1.1;
+      letter-spacing: -.03em;
+      overflow-wrap: anywhere;
+    }
+    .metric small { color: var(--muted-2); }
+
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      margin-top: 24px;
+      padding: 10px 0;
+      background: linear-gradient(180deg, rgba(5,8,13,.96), rgba(5,8,13,.87) 70%, transparent);
+      backdrop-filter: blur(18px);
+    }
+    .toolbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: rgba(9,16,24,.86);
+    }
+    .tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tab,
+    .control-button {
+      min-height: 42px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      padding: 9px 13px;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 700;
+    }
+    .tab:hover, .control-button:hover { color: var(--text); border-color: var(--line); }
+    .tab[aria-selected="true"] { background: var(--azure-soft); color: var(--azure); border-color: rgba(97,203,255,.22); }
+    .control-button { border-color: var(--line); background: var(--panel); color: var(--text); }
+    .control-button[disabled] { cursor: progress; opacity: .6; }
+    button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
+      outline: 3px solid rgba(97,203,255,.6);
+      outline-offset: 3px;
+    }
+    .load-state {
+      color: var(--muted);
+      font: 650 .7rem/1.25 var(--mono);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .load-state strong { color: var(--green); }
+
+    main { padding-bottom: 64px; }
+    .tab-panel[hidden] { display: none; }
+    .section { padding: 42px 0 0; }
+    .section-heading {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+    .section-kicker {
+      color: var(--azure);
+      font: 700 .7rem/1 var(--mono);
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+    h2 {
+      margin: 7px 0 0;
+      font-size: clamp(1.7rem, 4vw, 2.75rem);
+      line-height: 1;
+      letter-spacing: -.035em;
+    }
+    h3 { margin: 0; font-size: 1.08rem; }
+    .section-note { max-width: 650px; margin: 10px 0 0; color: var(--muted); }
+
+    .boundary {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(240px, .7fr);
+      gap: 18px;
+      padding: 22px;
+      border: 1px solid rgba(245,199,111,.28);
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, var(--amber-soft), rgba(12,19,28,.82) 48%);
+    }
+    .boundary strong { color: var(--amber); }
+    .boundary p { margin: 9px 0 0; color: #d2d9df; }
+    .boundary-code {
+      display: grid;
+      align-content: center;
+      gap: 8px;
+      min-width: 0;
+      padding: 14px;
+      border-radius: 12px;
+      background: rgba(0,0,0,.22);
+      font: 700 .76rem/1.55 var(--mono);
+      color: #d9e4ee;
+    }
+    .boundary-code span { overflow-wrap: anywhere; }
+    .boundary-code b { color: var(--amber); }
+
+    .filters {
+      display: grid;
+      grid-template-columns: minmax(180px, 1fr) minmax(170px, .45fr);
+      gap: 10px;
+      margin: 18px 0;
+    }
+    .field { display: grid; gap: 7px; }
+    .field label {
+      color: var(--muted);
+      font: 650 .7rem/1 var(--mono);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .field input, .field select {
+      min-height: 46px;
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      padding: 10px 12px;
+      background: #071019;
+    }
+
+    .identity-layout {
+      display: grid;
+      grid-template-columns: minmax(260px, .8fr) minmax(0, 1.55fr);
+      gap: 18px;
+    }
+    .identity-list {
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+    .identity-button {
+      width: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      text-align: left;
+      min-height: 64px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: var(--text);
+      background: var(--panel-3);
+    }
+    .identity-button:hover { border-color: var(--line-strong); background: #0e1823; }
+    .identity-button[aria-pressed="true"] { border-color: rgba(97,203,255,.42); background: var(--azure-soft); }
+    .identity-name { display: block; font-weight: 750; }
+    .identity-id { display: block; margin-top: 3px; color: var(--muted-2); font: .72rem/1.2 var(--mono); }
+    .count-badge {
+      display: inline-grid;
+      min-width: 36px;
+      height: 36px;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      font: 700 .78rem/1 var(--mono);
+      color: var(--azure);
+    }
+
+    .detail-panel {
+      min-width: 0;
+      min-height: 320px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 22px;
+      background:
+        linear-gradient(140deg, rgba(97,203,255,.07), transparent 42%),
+        var(--panel);
+      box-shadow: var(--shadow);
+    }
+    .detail-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+    .detail-head h3 { font-size: clamp(1.5rem, 3vw, 2.15rem); letter-spacing: -.035em; }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font: 750 .65rem/1 var(--mono);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .status-pill.pending, .status-pill.unknown { color: var(--amber); border-color: rgba(245,199,111,.3); background: var(--amber-soft); }
+    .status-pill.strongly-supported { color: var(--azure); border-color: rgba(97,203,255,.34); background: var(--azure-soft); }
+    .status-pill.canonical { color: var(--green); border-color: rgba(142,232,176,.35); background: var(--green-soft); }
+    .status-pill.tentative { color: var(--violet); border-color: rgba(185,164,255,.3); background: rgba(185,164,255,.1); }
+    .detail-copy { margin: 18px 0 0; color: #c2cfdb; }
+    .gene-strip {
+      display: flex;
+      gap: 5px;
+      margin-top: 22px;
+      min-height: 42px;
+      align-items: stretch;
+    }
+    .gene-cell {
+      min-width: 11px;
+      flex: 1;
+      border: 1px solid rgba(97,203,255,.26);
+      border-radius: 5px 5px 1px 1px;
+      background: linear-gradient(180deg, rgba(97,203,255,.42), rgba(97,203,255,.08));
+    }
+    .gene-cell.empty { border-style: dashed; background: rgba(97,203,255,.03); }
+    .detail-meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .mini-stat { padding: 12px; border: 1px solid var(--line); border-radius: 11px; background: rgba(0,0,0,.12); }
+    .mini-stat b { display: block; font-size: 1.25rem; }
+    .mini-stat span { color: var(--muted); font-size: .76rem; }
+
+    .gene-grid, .family-grid, .method-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .evidence-card {
+      min-width: 0;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel);
+    }
+    .card-top { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+    .mono { font-family: var(--mono); }
+    .muted { color: var(--muted); }
+    .tiny { font-size: .76rem; }
+    .evidence-card p { color: #bfccd8; }
+    .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+    .tag {
+      padding: 5px 8px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      font: 650 .68rem/1 var(--mono);
+    }
+    .channel-audio { color: var(--cyan); }
+    .channel-structural { color: var(--azure); }
+    .channel-documentary { color: var(--violet); }
+    .channel-canonical { color: var(--green); }
+    .empty-state {
+      grid-column: 1 / -1;
+      padding: 28px;
+      border: 1px dashed var(--line-strong);
+      border-radius: var(--radius);
+      background: rgba(9,16,24,.65);
+    }
+    .empty-state strong { color: var(--azure); }
+
+    .fixture-warning {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 18px;
+      padding: 14px 16px;
+      border: 1px solid rgba(255,122,131,.3);
+      border-radius: 12px;
+      background: var(--red-soft);
+      color: #ffd4d7;
+      font: 750 .76rem/1.35 var(--mono);
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .fixture-warning::before { content: "TEST"; color: var(--red); }
+
+    .fixture-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(270px, .75fr);
+      gap: 18px;
+    }
+    .candidate-list { display: grid; gap: 8px; }
+    .candidate-button {
+      width: 100%;
+      display: grid;
+      grid-template-columns: minmax(0,1fr) auto;
+      gap: 10px;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: var(--panel-3);
+      text-align: left;
+    }
+    .candidate-button[aria-pressed="true"] { border-color: rgba(97,203,255,.4); background: var(--azure-soft); }
+    .candidate-result {
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel);
+    }
+    .result-word { margin: 5px 0 0; font-size: clamp(1.5rem, 4vw, 2.8rem); letter-spacing: -.045em; }
+    .result-word.counterfeit, .result-word.nonconforming { color: var(--red); }
+    .result-word.conforming { color: var(--green); }
+    .result-word.boundary { color: var(--amber); }
+
+    .promotion-ladder { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 8px; }
+    .promotion-button {
+      min-height: 88px;
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel-3);
+      text-align: left;
+    }
+    .promotion-button[aria-pressed="true"] { border-color: rgba(97,203,255,.38); background: var(--azure-soft); }
+    .promotion-button b { display: block; margin-bottom: 5px; }
+    .promotion-button span { color: var(--muted); font-size: .75rem; }
+    .method-detail {
+      margin-top: 10px;
+      padding: 17px;
+      border-left: 2px solid var(--azure);
+      background: linear-gradient(90deg, var(--azure-soft), transparent);
+      color: #c7d4df;
+    }
+
+    .operator-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; }
+    .operator {
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(10,17,25,.72);
+      font: 700 .75rem/1.35 var(--mono);
+      letter-spacing: .05em;
+    }
+    .operator small { display: block; margin-top: 5px; color: var(--muted-2); font: 500 .68rem/1.3 var(--mono); letter-spacing: 0; }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 28px 0 46px;
+      color: var(--muted);
+      font-size: .82rem;
+    }
+    .footer-grid { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+    .source-path { font-family: var(--mono); font-size: .72rem; color: var(--muted-2); }
+
+    @media (max-width: 820px) {
+      .status-rail { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .boundary, .identity-layout, .fixture-layout { grid-template-columns: 1fr; }
+      .gene-grid, .family-grid, .method-grid { grid-template-columns: 1fr; }
+      .promotion-ladder { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .operator-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .toolbar-inner { align-items: flex-start; flex-direction: column; }
+      .section-heading { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 540px) {
+      .shell { width: min(100% - 20px, 1180px); }
+      .masthead { padding-top: 35px; }
+      .status-rail { grid-template-columns: 1fr 1fr; }
+      .metric { padding: 13px; }
+      .filters { grid-template-columns: 1fr; }
+      .detail-meta { grid-template-columns: 1fr; }
+      .promotion-ladder, .operator-grid { grid-template-columns: 1fr; }
+      .tab { flex: 1 1 100%; }
+      .tabs { width: 100%; }
+      .control-button { width: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to evidence</a>
+<header class="masthead shell">
+  <div class="eyebrow">Starsilk / Leitmotif Genome</div>
+  <h1>Evidence<br>Observatory</h1>
+  <p class="dek">A live, inspectable view of what the musical corpus currently proves, what remains unresolved, and how a candidate leitmotif earns the right to become part of the genome.</p>
+  <p class="principle" id="principle">relationships over notes; behavior over melodies; inheritance over repetition; transformation over quotation</p>
+
+  <div class="status-rail" aria-label="Current evidence statistics">
+    <div class="metric"><span class="metric-label">Identities under study</span><b class="metric-value" id="identityCount">7</b></div>
+    <div class="metric"><span class="metric-label">Evidence-backed genes</span><b class="metric-value" id="geneCount">0</b></div>
+    <div class="metric"><span class="metric-label">Independent families</span><b class="metric-value" id="familyCount">0</b></div>
+    <div class="metric"><span class="metric-label">Corpus status</span><b class="metric-value" id="corpusStatus">Not ingested</b></div>
+  </div>
+</header>
+
+<nav class="toolbar" aria-label="Evidence views">
+  <div class="shell toolbar-inner">
+    <div class="tabs" role="tablist" aria-label="Evidence sections">
+      <button class="tab" id="tab-current" type="button" role="tab" aria-selected="true" aria-controls="panel-current" tabindex="0">Current evidence</button>
+      <button class="tab" id="tab-fixture" type="button" role="tab" aria-selected="false" aria-controls="panel-fixture" tabindex="-1">Proof fixture</button>
+      <button class="tab" id="tab-method" type="button" role="tab" aria-selected="false" aria-controls="panel-method" tabindex="-1">Method</button>
+    </div>
+    <div>
+      <button class="control-button" id="reloadButton" type="button">Reload evidence</button>
+      <div class="load-state" id="loadState" aria-live="polite">Embedded snapshot</div>
+    </div>
+  </div>
+</nav>
+
+<main id="main" class="shell">
+  <section class="tab-panel" id="panel-current" role="tabpanel" aria-labelledby="tab-current">
+    <div class="section">
+      <div class="boundary">
+        <div>
+          <div class="section-kicker">Current evidence boundary</div>
+          <h2>The absence is part of the result.</h2>
+          <p id="boundaryText"><strong>No real Starsilk genes have been promoted.</strong> The corpus manifest contains no ingested source families yet. The seven named identities are research targets, not pre-filled musical conclusions.</p>
+        </div>
+        <div class="boundary-code" aria-label="Evidence boundary summary">
+          <span>registry.status = <b id="registryStatusCode">analysis-pending</b></span>
+          <span>corpus.status = <b id="corpusStatusCode">not-yet-ingested</b></span>
+          <span>genes = <b id="geneCountCode">0</b></span>
+          <span>sources = <b id="sourceCountCode">0</b></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-heading">
+        <div>
+          <div class="section-kicker">Genome targets</div>
+          <h2>Identities under investigation</h2>
+          <p class="section-note">Select an identity to inspect its current gene count and evidence state. Empty gene space is rendered deliberately rather than filled with speculation.</p>
+        </div>
+      </div>
+
+      <div class="filters">
+        <div class="field">
+          <label for="identitySearch">Find identity</label>
+          <input id="identitySearch" type="search" placeholder="Tiger, Drakken, Siege Wall…" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="identityStatusFilter">Analysis state</label>
+          <select id="identityStatusFilter">
+            <option value="all">All states</option>
+            <option value="pending">Pending</option>
+            <option value="active">Active</option>
+            <option value="complete">Complete</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="identity-layout">
+        <div class="identity-list" id="identityList" aria-label="Genome identities"></div>
+        <article class="detail-panel" id="identityDetail" aria-live="polite"></article>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-heading">
+        <div>
+          <div class="section-kicker">Evidence ledger</div>
+          <h2>Registered genes</h2>
+          <p class="section-note">This section is data-driven. When real genes are added to the registry, their carriers, status, evidence channels, source families, invariants and mutation rules will appear here automatically.</p>
+        </div>
+        <div class="field">
+          <label for="geneStatusFilter">Gene status</label>
+          <select id="geneStatusFilter">
+            <option value="all">All statuses</option>
+            <option value="unknown">Unknown</option>
+            <option value="tentative">Tentative</option>
+            <option value="strongly-supported">Strongly supported</option>
+            <option value="canonical">Canonical</option>
+          </select>
+        </div>
+      </div>
+      <div class="gene-grid" id="geneGrid"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-heading">
+        <div>
+          <div class="section-kicker">Lineage ledger</div>
+          <h2>Independent composition families</h2>
+          <p class="section-note">Evidence strength is counted by compositional ancestry, not by raw file count. Twenty derivatives of one ancestor remain one witness.</p>
+        </div>
+      </div>
+      <div class="family-grid" id="familyGrid"></div>
+    </div>
+  </section>
+
+  <section class="tab-panel" id="panel-fixture" role="tabpanel" aria-labelledby="tab-fixture" hidden>
+    <div class="section">
+      <div class="fixture-warning">Non-canonical system test. These demo genes exist only to prove the evidence machinery.</div>
+      <div class="section-heading">
+        <div>
+          <div class="section-kicker">Synthetic proof</div>
+          <h2>What evidence will look like when it exists</h2>
+          <p class="section-note">The fixture demonstrates independent-family support, structural and audio evidence, permitted mutation, forbidden drift and surface counterfeiting without contaminating Starsilk canon.</p>
+        </div>
+      </div>
+      <div class="gene-grid" id="fixtureGeneGrid"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-heading">
+        <div>
+          <div class="section-kicker">Counterfeit test</div>
+          <h2>Can the grammar recognize its descendants?</h2>
+          <p class="section-note">Select a synthetic candidate. Surface resemblance has no identity weight; forbidden mutation can fail a candidate even when the underlying gene remains recognizable.</p>
+        </div>
+      </div>
+      <div class="fixture-layout">
+        <div class="candidate-list" id="candidateList"></div>
+        <aside class="candidate-result" id="candidateResult" aria-live="polite"></aside>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-heading">
+        <div>
+          <div class="section-kicker">Synthetic ancestry</div>
+          <h2>Why files are not witnesses</h2>
+        </div>
+      </div>
+      <div class="family-grid" id="fixtureFamilyGrid"></div>
+    </div>
+  </section>
+
+  <section class="tab-panel" id="panel-method" role="tabpanel" aria-labelledby="tab-method" hidden>
+    <div class="section">
+      <div class="section-heading">
+        <div>
+          <div class="section-kicker">Promotion gate</div>
+          <h2>How a gene earns confidence</h2>
+          <p class="section-note">Status is an evidence claim, not a tone of voice. Select a level to see its required proof.</p>
+        </div>
+      </div>
+      <div class="promotion-ladder" id="promotionLadder"></div>
+      <div class="method-detail" id="promotionDetail" aria-live="polite"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-heading">
+        <div>
+          <div class="section-kicker">Evidence channels</div>
+          <h2>Intent and realization stay separate</h2>
+        </div>
+      </div>
+      <div class="method-grid">
+        <article class="evidence-card"><h3 class="channel-audio">Audio</h3><p>Directly audible recurrence or behavior in the realized track.</p><span class="tag">realization evidence</span></article>
+        <article class="evidence-card"><h3 class="channel-structural">Structural</h3><p>Transcription, MIDI, score or formal analysis that establishes the musical relationship.</p><span class="tag">realization evidence</span></article>
+        <article class="evidence-card"><h3 class="channel-documentary">Documentary</h3><p>Prompts, arrangement notes, lyrics, metadata or written intent. Useful, but not proof that the audio realized the instruction.</p><span class="tag">intent evidence</span></article>
+        <article class="evidence-card"><h3 class="channel-canonical">Canonical</h3><p>Explicit authority establishing a musical rule as canon. Required before a gene may carry canonical status.</p><span class="tag">authority evidence</span></article>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-heading">
+        <div>
+          <div class="section-kicker">Transformation grammar</div>
+          <h2>Questions the genome is built to answer</h2>
+          <p class="section-note">These operators are method-defined but evidence-pending. Their rules remain empty until the corpus supports them.</p>
+        </div>
+      </div>
+      <div class="operator-grid" id="operatorGrid"></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="shell footer-grid">
+    <div>
+      <strong>Starsilk Leitmotif Genome</strong><br>
+      <span>No tracking. Static document. Repository JSON is the evidence source.</span>
+    </div>
+    <div>
+      <a href="https://github.com/westkitty/Starsilk_Leitmotif_Genome">Repository</a><br>
+      <span class="source-path">data/genome/starsilk_genome.json · data/corpus/corpus_manifest.json</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(() => {
+  'use strict';
+
+  const FALLBACK = {
+    genome: {
+      schema_version: 1,
+      registry_id: 'starsilk-main',
+      registry_status: 'analysis-pending',
+      principle: 'relationships over notes; behavior over melodies; inheritance over repetition; transformation over quotation',
+      identities: [
+        { identity_id: 'TIGER', name: 'Tiger / Shard-God', analysis_status: 'pending', gene_ids: [] },
+        { identity_id: 'CODEC', name: 'Codec', analysis_status: 'pending', gene_ids: [] },
+        { identity_id: 'DRAKKEN', name: 'Drakken', analysis_status: 'pending', gene_ids: [] },
+        { identity_id: 'STARSILK', name: 'Starsilk', analysis_status: 'pending', gene_ids: [] },
+        { identity_id: 'SIEGE_WALL', name: 'Siege Wall', analysis_status: 'pending', gene_ids: [] },
+        { identity_id: 'BLOOD_ECLIPSE_RECURRENCE', name: 'Blood Eclipse War recurrence', analysis_status: 'pending', gene_ids: [] },
+        { identity_id: 'MOTHER', name: 'Mother', analysis_status: 'pending', gene_ids: [] }
+      ],
+      genes: [],
+      transformation_operators: [
+        { operator_id: 'ALLIANCE', status: 'method-defined-evidence-pending' },
+        { operator_id: 'CORRUPTION', status: 'method-defined-evidence-pending' },
+        { operator_id: 'MEMORY', status: 'method-defined-evidence-pending' },
+        { operator_id: 'VIOLENCE', status: 'method-defined-evidence-pending' },
+        { operator_id: 'ABSENCE', status: 'method-defined-evidence-pending' },
+        { operator_id: 'HISTORICAL_RECURRENCE', status: 'method-defined-evidence-pending' }
+      ],
+      notes: [
+        'Identity names and transformation questions come from the founding specification.',
+        'No musical gene is asserted until corpus evidence is ingested and validated.',
+        'The Siege Wall absence/deletion model remains a hypothesis until source evidence supports it.'
+      ]
+    },
+    corpus: {
+      schema_version: 1,
+      corpus_id: 'starsilk-musical-corpus',
+      status: 'not-yet-ingested',
+      source_families: [],
+      sources: []
+    },
+    fixtures: { positive_descendants: [], boundary_cases: [], counterfeits: [], negative_controls: [], holdout_results: [] },
+    demoGenome: {
+      schema_version: 1,
+      registry_id: 'noncanonical-test-fixture',
+      identities: [{ identity_id: 'DEMO', name: 'Synthetic test identity', gene_ids: ['DEMO-I01','DEMO-R01'] }],
+      genes: [
+        {
+          gene_id: 'DEMO-I01', identity_id: 'DEMO', status: 'strongly-supported', carriers: ['interval'],
+          genotype: { relative_intervals: [0,3,2,-1] },
+          invariants: ['contour-rise-rise-contract','terminal-contraction'],
+          permitted_mutations: ['transposition','octave-displacement','rhythmic-augmentation'],
+          forbidden_mutations: ['contour-reversal'], required_for_recognition: true, count_for_conformance: true, weight: 2,
+          evidence: [
+            { source_family_id: 'DEMO-FAMILY-A', source_id: 'DEMO-A1', channel: 'structural' },
+            { source_family_id: 'DEMO-FAMILY-B', source_id: 'DEMO-B1', channel: 'audio' }
+          ]
+        },
+        {
+          gene_id: 'DEMO-R01', identity_id: 'DEMO', status: 'tentative', carriers: ['rhythm'],
+          genotype: { relative_durations: [3,3,2] }, invariants: ['three-three-two-grouping'],
+          permitted_mutations: ['augmentation','diminution'], forbidden_mutations: [], required_for_recognition: false,
+          count_for_conformance: true, weight: 1,
+          evidence: [{ source_family_id: 'DEMO-FAMILY-A', source_id: 'DEMO-A1', channel: 'structural' }]
+        }
+      ]
+    },
+    demoCorpus: {
+      schema_version: 1,
+      corpus_id: 'noncanonical-test-corpus',
+      source_families: [
+        { family_id: 'DEMO-FAMILY-A', title: 'Synthetic family A', member_source_ids: ['DEMO-A1','DEMO-A2'] },
+        { family_id: 'DEMO-FAMILY-B', title: 'Synthetic family B', member_source_ids: ['DEMO-B1'] },
+        { family_id: 'DEMO-FAMILY-C', title: 'Synthetic negative control', member_source_ids: ['DEMO-C1'] }
+      ],
+      sources: [
+        { source_id: 'DEMO-A1', source_family_id: 'DEMO-FAMILY-A', authority: 'tentative', audio_inspected: true },
+        { source_id: 'DEMO-A2', source_family_id: 'DEMO-FAMILY-A', authority: 'tentative', audio_inspected: true },
+        { source_id: 'DEMO-B1', source_family_id: 'DEMO-FAMILY-B', authority: 'tentative', audio_inspected: true },
+        { source_id: 'DEMO-C1', source_family_id: 'DEMO-FAMILY-C', authority: 'unknown', audio_inspected: true }
+      ]
+    }
+  };
+
+  const CANDIDATES = [
+    {
+      id: 'DEMO-DESCENDANT', label: 'Genuine descendant', classification: 'conforming', score: '1.00',
+      summary: 'Carries both registered genes while changing orchestration and using permitted transformations.',
+      proof: 'Identity survives because invariants remain intact; literal quotation is unnecessary.'
+    },
+    {
+      id: 'DEMO-BOUNDARY', label: 'Boundary relative', classification: 'boundary', score: '0.67',
+      summary: 'Retains some genomic structure but not enough to count as a fully conforming descendant.',
+      proof: 'Useful for testing the edge of recognizability without collapsing the category into yes/no intuition.'
+    },
+    {
+      id: 'DEMO-COUNTERFEIT', label: 'Surface counterfeit', classification: 'counterfeit', score: '0.00',
+      summary: 'Copies genre, mix density and synth family while expressing no registered genes.',
+      proof: 'Production resemblance alone carries zero identity weight.'
+    },
+    {
+      id: 'DEMO-DRIFT', label: 'Forbidden drift', classification: 'nonconforming', score: '0.00',
+      summary: 'Still exposes the interval gene but applies a forbidden contour reversal.',
+      proof: 'Recognition does not excuse an identity-breaking mutation.'
+    }
+  ];
+
+  const PROMOTION = [
+    { id: 'unknown', label: 'Unknown', short: 'No sufficient claim', detail: 'Keep the behavior unresolved when evidence is absent, inaccessible, contradictory or too weak. Unknown is a valid analytical result.' },
+    { id: 'tentative', label: 'Tentative', short: 'Plausible pattern', detail: 'A useful hypothesis may be recorded when evidence exists but independence, recurrence or realization is not yet strong enough for promotion.' },
+    { id: 'strongly-supported', label: 'Strongly supported', short: 'Independent recurrence', detail: 'Requires at least two independent source families plus at least one realized audio or structural evidence channel. Multiple versions from one family do not satisfy this gate.' },
+    { id: 'canonical', label: 'Canonical', short: 'Explicit authority', detail: 'Requires canonical-channel evidence. Repetition, analyst confidence or a persuasive theory cannot silently promote a musical rule into canon.' }
+  ];
+
+  const state = {
+    data: structuredClone(FALLBACK),
+    selectedIdentity: 'TIGER',
+    selectedCandidate: CANDIDATES[0].id,
+    selectedPromotion: 'strongly-supported',
+    activeTab: 'current',
+    source: 'snapshot'
+  };
+
+  const $ = (selector) => document.querySelector(selector);
+  const $$ = (selector) => [...document.querySelectorAll(selector)];
+
+  function text(value, fallback = '—') {
+    if (value === null || value === undefined || value === '') return fallback;
+    return String(value);
+  }
+
+  function prettyStatus(value) {
+    return text(value).replaceAll('-', ' ').replace(/\b\w/g, letter => letter.toUpperCase());
+  }
+
+  function safeArray(value) { return Array.isArray(value) ? value : []; }
+
+  function genesForIdentity(identityId, genome = state.data.genome) {
+    const declared = safeArray(genome.identities).find(item => item.identity_id === identityId)?.gene_ids || [];
+    const byIdentity = safeArray(genome.genes).filter(gene => gene.identity_id === identityId);
+    const ids = new Set([...declared, ...byIdentity.map(gene => gene.gene_id)]);
+    return safeArray(genome.genes).filter(gene => ids.has(gene.gene_id));
+  }
+
+  function sourceById(id, corpus) {
+    return safeArray(corpus.sources).find(source => source.source_id === id);
+  }
+
+  function renderMetrics() {
+    const genome = state.data.genome;
+    const corpus = state.data.corpus;
+    $('#identityCount').textContent = safeArray(genome.identities).length;
+    $('#geneCount').textContent = safeArray(genome.genes).length;
+    $('#familyCount').textContent = safeArray(corpus.source_families).length;
+    $('#corpusStatus').textContent = prettyStatus(corpus.status || 'unknown');
+    $('#principle').textContent = genome.principle || FALLBACK.genome.principle;
+    $('#registryStatusCode').textContent = text(genome.registry_status, 'unknown');
+    $('#corpusStatusCode').textContent = text(corpus.status, 'unknown');
+    $('#geneCountCode').textContent = safeArray(genome.genes).length;
+    $('#sourceCountCode').textContent = safeArray(corpus.sources).length;
+
+    const geneCount = safeArray(genome.genes).length;
+    const familyCount = safeArray(corpus.source_families).length;
+    $('#boundaryText').innerHTML = geneCount === 0 && familyCount === 0
+      ? '<strong>No real Starsilk genes have been promoted.</strong> The corpus manifest contains no ingested source families yet. The named identities are research targets, not pre-filled musical conclusions.'
+      : `<strong>${geneCount} registered gene${geneCount === 1 ? '' : 's'} across ${familyCount} independent source famil${familyCount === 1 ? 'y' : 'ies'}.</strong> Inspect each claim below; confidence is carried by evidence records, not by presentation.`;
+  }
+
+  function renderIdentityList() {
+    const query = $('#identitySearch').value.trim().toLowerCase();
+    const status = $('#identityStatusFilter').value;
+    const identities = safeArray(state.data.genome.identities).filter(identity => {
+      const matchesQuery = !query || `${identity.name} ${identity.identity_id}`.toLowerCase().includes(query);
+      const matchesStatus = status === 'all' || identity.analysis_status === status;
+      return matchesQuery && matchesStatus;
+    });
+
+    const list = $('#identityList');
+    list.replaceChildren();
+    if (!identities.length) {
+      const empty = document.createElement('div');
+      empty.className = 'empty-state';
+      empty.textContent = 'No identities match the current filter.';
+      list.append(empty);
+      renderIdentityDetail(null);
+      return;
+    }
+    if (!identities.some(identity => identity.identity_id === state.selectedIdentity)) state.selectedIdentity = identities[0].identity_id;
+
+    identities.forEach(identity => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'identity-button';
+      button.dataset.identityId = identity.identity_id;
+      button.setAttribute('aria-pressed', String(identity.identity_id === state.selectedIdentity));
+      const geneCount = genesForIdentity(identity.identity_id).length;
+      button.innerHTML = `<span><span class="identity-name"></span><span class="identity-id"></span></span><span class="count-badge" aria-label="${geneCount} genes">${geneCount}</span>`;
+      button.querySelector('.identity-name').textContent = identity.name;
+      button.querySelector('.identity-id').textContent = identity.identity_id;
+      button.addEventListener('click', () => {
+        state.selectedIdentity = identity.identity_id;
+        renderIdentityList();
+      });
+      list.append(button);
+    });
+    renderIdentityDetail(identities.find(identity => identity.identity_id === state.selectedIdentity));
+  }
+
+  function renderIdentityDetail(identity) {
+    const panel = $('#identityDetail');
+    if (!identity) {
+      panel.innerHTML = '<div class="empty-state">Choose a visible identity to inspect it.</div>';
+      return;
+    }
+    const genes = genesForIdentity(identity.identity_id);
+    const evidence = genes.flatMap(gene => safeArray(gene.evidence));
+    const families = new Set(evidence.map(item => item.source_family_id).filter(Boolean));
+    const channels = new Set(evidence.map(item => item.channel).filter(Boolean));
+    const cells = Math.max(10, genes.length || 0);
+    const strip = Array.from({ length: cells }, (_, index) => `<span class="gene-cell ${index >= genes.length ? 'empty' : ''}" aria-hidden="true"></span>`).join('');
+    const note = genes.length
+      ? 'This identity has registered genes. Select the ledger below to inspect each evidence trail.'
+      : 'No evidence-backed musical gene is registered for this identity yet. The empty strip is intentional: absence of proof is not replaced with visual invention.';
+
+    panel.innerHTML = `
+      <div class="detail-head">
+        <div><span class="identity-id"></span><h3></h3></div>
+        <span class="status-pill"></span>
+      </div>
+      <p class="detail-copy"></p>
+      <div class="gene-strip" aria-label="Gene occupancy strip">${strip}</div>
+      <div class="detail-meta">
+        <div class="mini-stat"><b>${genes.length}</b><span>registered genes</span></div>
+        <div class="mini-stat"><b>${families.size}</b><span>evidence families</span></div>
+        <div class="mini-stat"><b>${channels.size}</b><span>evidence channels</span></div>
+      </div>`;
+    panel.querySelector('.identity-id').textContent = identity.identity_id;
+    panel.querySelector('h3').textContent = identity.name;
+    panel.querySelector('.detail-copy').textContent = note;
+    const pill = panel.querySelector('.status-pill');
+    pill.textContent = prettyStatus(identity.analysis_status || 'unknown');
+    pill.classList.add(identity.analysis_status || 'unknown');
+  }
+
+  function geneCard(gene, corpus, fixture = false) {
+    const card = document.createElement('article');
+    card.className = 'evidence-card';
+    const evidence = safeArray(gene.evidence);
+    const families = new Set(evidence.map(item => item.source_family_id).filter(Boolean));
+    const channels = new Set(evidence.map(item => item.channel).filter(Boolean));
+    const carriers = safeArray(gene.carriers);
+    const invariants = safeArray(gene.invariants);
+    const permitted = safeArray(gene.permitted_mutations);
+    const forbidden = safeArray(gene.forbidden_mutations);
+    card.innerHTML = `
+      <div class="card-top">
+        <div><div class="identity-id"></div><h3></h3></div>
+        <span class="status-pill"></span>
+      </div>
+      <p class="tiny muted summary"></p>
+      <div class="tag-row carriers"></div>
+      <div class="tag-row channels"></div>
+      <p class="tiny evidence-summary"></p>
+      <details>
+        <summary>Inspect genomic rules</summary>
+        <p class="tiny invariants"></p>
+        <p class="tiny permitted"></p>
+        <p class="tiny forbidden"></p>
+      </details>`;
+    card.querySelector('.identity-id').textContent = gene.identity_id || (fixture ? 'DEMO' : 'UNKNOWN');
+    card.querySelector('h3').textContent = gene.gene_id || 'Unnamed gene';
+    const pill = card.querySelector('.status-pill');
+    pill.textContent = prettyStatus(gene.status || 'unknown');
+    pill.classList.add(gene.status || 'unknown');
+    card.querySelector('.summary').textContent = `${families.size} independent evidence famil${families.size === 1 ? 'y' : 'ies'} · ${evidence.length} evidence record${evidence.length === 1 ? '' : 's'}${gene.required_for_recognition ? ' · required for recognition' : ''}`;
+    const carrierRow = card.querySelector('.carriers');
+    carriers.forEach(carrier => { const span = document.createElement('span'); span.className = 'tag'; span.textContent = carrier; carrierRow.append(span); });
+    const channelRow = card.querySelector('.channels');
+    [...channels].forEach(channel => { const span = document.createElement('span'); span.className = `tag channel-${channel}`; span.textContent = channel; channelRow.append(span); });
+    card.querySelector('.evidence-summary').textContent = evidence.length
+      ? evidence.map(item => `${item.source_family_id || 'no-family'} / ${item.source_id || 'no-source'} / ${item.channel || 'no-channel'}`).join(' · ')
+      : 'No evidence records.';
+    card.querySelector('.invariants').textContent = `Invariants: ${invariants.length ? invariants.join(' · ') : 'none recorded'}`;

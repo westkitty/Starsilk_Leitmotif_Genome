@@ -1,0 +1,56 @@
+name: Deploy evidence observatory to Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "data/**"
+      - "tests/fixtures/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Assemble static site
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf public
+          mkdir -p public/data/genome public/data/corpus public/data/tests public/tests/fixtures
+          cp site/index.html public/index.html
+          cp data/genome/starsilk_genome.json public/data/genome/
+          cp data/corpus/corpus_manifest.json public/data/corpus/
+          cp data/tests/conformance_fixtures.json public/data/tests/
+          cp tests/fixtures/demo_genome.json public/tests/fixtures/
+          cp tests/fixtures/demo_corpus.json public/tests/fixtures/
+          touch public/.nojekyll
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: public
+
+      - name: Deploy to Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
